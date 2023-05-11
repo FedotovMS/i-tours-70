@@ -1,4 +1,5 @@
 import { ReactComponent as LogoIcon } from 'assets/image/logo.svg';
+
 import './Header.css';
 
 const Header = ({ theme, onToggle }) => {

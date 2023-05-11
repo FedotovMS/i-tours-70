@@ -110,17 +110,19 @@ class Tours extends Component {
 							{isError ? (
 								<div>Something went wrong</div>
 							) : (
-								<ul>
+								<>
 									<h6>Total tours:{tours.total_items}</h6>
-									{tours.items.map((tour) => (
-										<ToursItem
-											key={tour.id}
-											onDelete={this.handleDeleteTours}
-											{...tour}
-											{...this.props}
-										/>
-									))}
-								</ul>
+									<ul>
+										{tours.items.map((tour) => (
+											<ToursItem
+												key={tour.id}
+												{...this.props}
+												{...tour}
+												onDelete={this.handleDeleteTours}
+											/>
+										))}
+									</ul>
+								</>
 							)}
 						</>
 					)}
