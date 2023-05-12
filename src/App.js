@@ -1,31 +1,25 @@
-import { useState } from 'react';
 import Header from './components/header';
-import Tours from './components/tours';
 
 import { DARK, LIGHT } from 'constants';
 
 import './App.scss';
 import clsx from 'clsx';
-import ToursHook from 'components/tours/Tours.Hook';
+import Tours from 'components/tours/Tours';
+import ThemeContextComponent, { useTheme } from 'hooks/useThemeContext';
 
 const App = () => {
-	const [theme, setTheme] = useState(DARK);
-
-	const handleToggleTheme = () => {
-		setTheme((prevTheme) => (prevTheme === DARK ? LIGHT : DARK));
-	};
-
+	const { theme } = useTheme();
 	return (
-		<div
-			className={clsx('app-container', {
-				'dark-theme': theme === DARK,
-				'light-theme': theme === LIGHT,
-			})}>
-			<Header theme={theme} onToggle={handleToggleTheme}></Header>
-			{/* <Tours theme={theme}></Tours> */}
-
-			<ToursHook theme={theme} />
-		</div>
+		<ThemeContextComponent>
+			<div
+				className={clsx('app-container', {
+					'dark-theme': theme === DARK,
+					'light-theme': theme === LIGHT,
+				})}>
+				<Header />
+				<Tours theme={theme}></Tours>
+			</div>
+		</ThemeContextComponent>
 	);
 };
 

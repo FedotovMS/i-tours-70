@@ -1,8 +1,11 @@
 import { ReactComponent as LogoIcon } from 'assets/image/logo.svg';
+import { useTheme } from 'hooks/useThemeContext';
 
 import './Header.css';
 
-const Header = ({ theme, onToggle }) => {
+const Header = () => {
+	const { theme, onToggle } = useTheme();
+
 	return (
 		<header>
 			<LogoIcon id='logo' />
