@@ -6,9 +6,11 @@ import './Tours.scss';
 import ToursForm from 'components/tours-form/ToursForm';
 import debounce from 'lodash.debounce';
 import { useToggle } from 'hooks/useToggle';
+import { Outlet, useParams } from 'react-router-dom';
 
 const Tours = () => {
 	const { visible, open, close } = useToggle();
+	const { tourId } = useParams();
 
 	const [query, setQuery] = useState('');
 	const [isLoading, setLoading] = useState(false);
@@ -58,36 +60,41 @@ const Tours = () => {
 		<>
 			<ToursForm visible={visible} onClose={close} onAddFunc={handleAddTours} />
 			<p>{isLoading}</p>
-			<section className='tours-page'>
-				<div className='tours-page__controlls'>
-					<h1>Tours page</h1>
-					<input
-						type='text'
-						placeholder='search by name...'
-						onChange={debounce((event) => setQuery(event.target.value), 1000)}
-					/>
 
-					<button onClick={open}>Open Modal</button>
-				</div>
-				{isLoading ? (
-					<div>...loading</div>
-				) : (
-					<>
-						{isError ? (
-							<div>Something went wrong</div>
-						) : (
-							<>
-								<h6>Total tours:{tours.total_items}</h6>
-								<ul>
-									{cachedToursArr.map((tour) => (
-										<ToursItem key={tour.id} {...tour} onDelete={handleDeleteTours} />
-									))}
-								</ul>
-							</>
-						)}
-					</>
-				)}
-			</section>
+			{false ? (
+				<Outlet />
+			) : (
+				<section className='tours-page'>
+					<div className='tours-page__controlls'>
+						<h1>Tours page</h1>
+						<input
+							type='text'
+							placeholder='search by name...'
+							onChange={debounce((event) => setQuery(event.target.value), 1000)}
+						/>
+
+						<button onClick={open}>Open Modal</button>
+					</div>
+					{isLoading ? (
+						<div>...loading</div>
+					) : (
+						<>
+							{isError ? (
+								<div>Something went wrong</div>
+							) : (
+								<>
+									<h6>Total tours:{tours.total_items}</h6>
+									<ul>
+										{cachedToursArr.map((tour) => (
+											<ToursItem key={tour.id} {...tour} onDelete={handleDeleteTours} />
+										))}
+									</ul>
+								</>
+							)}
+						</>
+					)}
+				</section>
+			)}
 		</>
 	);
 };
