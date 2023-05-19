@@ -1,13 +1,9 @@
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const TourDetails = () => {
-	const { tourId } = useParams();
+	const { state } = useLocation();
 
-	return (
-		<div>
-			<h1>TourDetails for id: {tourId}</h1>
-		</div>
-	);
+	return <p>Description:{state.description || 'not found'}</p>;
 };
 
 export default TourDetails;
