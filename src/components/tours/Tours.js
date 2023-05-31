@@ -7,55 +7,61 @@ import ToursForm from 'components/tours-form/ToursForm';
 import debounce from 'lodash.debounce';
 import { useToggle } from 'hooks/useToggle';
 import { useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTours } from 'store/tours/selectors';
+import { addNewTour, fetchAllTours, removeTourById } from 'store/tours/actions';
 
 const Tours = () => {
 	const { visible, open, close } = useToggle();
+	const dispatch = useDispatch();
 
-	// const [query, setQuery] = useState('');
+	const { items, total_items } = useSelector(getTours);
+
+	const [query, setQuery] = useState('');
 	const [isLoading, setLoading] = useState(false);
 	const [isError, setError] = useState(false);
-	const [tours, setTours] = useState({
-		total_items: 0,
-		items: [],
-	});
+	// const [tours, setTours] = useState({
+	// 	total_items: 0,
+	// 	items: [],
+	// });
 
-	const [searchParams, setSearchParams] = useSearchParams();
-	const query = searchParams.get('name') || '';
+	// const cachedToursArr = useMemo(
+	// 	() => tours.items.filter((el) => el.name.toLowerCase().includes(query.toLowerCase())),
+	// 	[query, tours.items]
+	// );
 
-	const cachedToursArr = useMemo(
-		() => tours.items.filter((el) => el.name.toLowerCase().includes(query.toLowerCase())),
-		[query, tours.items]
-	);
-
-	const handleFetchTours = async () => {
-		setLoading(true);
-		const response = await fetchTours();
-		setTours(response);
-		setLoading(false);
-	};
+	// const handleFetchTours = async () => {
+	// 	setLoading(true);
+	// 	const response = await fetchTours();
+	// 	setTours(response);
+	// 	setLoading(false);
+	// };
 
 	// componentDidMount && componentDidUpdate
 
 	useEffect(() => {
-		handleFetchTours();
-	}, []);
+		// handleFetchTours();
+		dispatch(fetchAllTours(query));
+	}, [dispatch, query]);
 
 	const handleAddTours = async (tour) => {
-		try {
-			await addTour(tour);
-			handleFetchTours();
-		} catch (err) {
-			setError(true);
-		}
+		// try {
+		// 	await addTour(tour);
+		// 	handleFetchTours();
+		// } catch (err) {
+		// 	setError(true);
+		// }
+		dispatch(addNewTour({ id: Math.ceil(Math.random() * 100000), ...tour }));
 	};
 
 	const handleDeleteTours = async (tourId) => {
-		try {
-			await deleteTourById(tourId);
-			handleFetchTours();
-		} catch (err) {
-			setError(true);
-		}
+		// try {
+		// 	await deleteTourById(tourId);
+		// 	handleFetchTours();
+		// } catch (err) {
+		// 	setError(true);
+		// }
+		dispatch(removeTourById(tourId));
 	};
 
 	return (
@@ -70,8 +76,7 @@ const Tours = () => {
 						type='text'
 						placeholder='search by name...'
 						// value={query}
-						// onChange={debounce((event) => setQuery(event.target.value), 1000)}
-						onChange={debounce((e) => setSearchParams({ name: e.target.value }), 1000)}
+						onChange={debounce((e) => setQuery(e.target.value), 1000)}
 					/>
 
 					<button onClick={open}>Open Modal</button>
@@ -84,9 +89,9 @@ const Tours = () => {
 							<div>Something went wrong</div>
 						) : (
 							<>
-								<h6>Total tours:{tours.total_items}</h6>
+								<h6>Total tours:{total_items}</h6>
 								<ul>
-									{cachedToursArr.map((tour) => (
+									{items.map((tour) => (
 										<ToursItem key={tour.id} {...tour} onDelete={handleDeleteTours} />
 									))}
 								</ul>

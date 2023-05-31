@@ -68,7 +68,7 @@ class ToursForm extends Component {
 				<div>
 					<h4>Tours form</h4>
 
-					<form onSubmit={this.props.handleSubmit}>
+					<form onSubmit={this.handleSubmit}>
 						<input
 							type='text'
 							name='name'

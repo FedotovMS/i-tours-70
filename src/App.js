@@ -19,12 +19,14 @@ import {
 import ContactUs from 'components/contact-us/ContactUs';
 // import Support from 'components/support/Support';
 import TourDetails from 'components/tour-details/TourDetails';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
+import { fetchTours } from 'api/tours';
 
 const Support = lazy(() => import('components/support/Support.js'));
 
 const App = () => {
 	const { theme } = useTheme();
+	const navigate = useNavigate();
 
 	const routes = [
 		{ path: '/tours', text: 'go to tours page' },
@@ -42,7 +44,11 @@ const App = () => {
 				<Header />
 				<nav>
 					{routes.map((el) => (
-						<NavLink to={el.path} className='nav-item' key={el.path}>
+						<NavLink
+							to={el.path}
+							className='nav-item'
+							key={el.path}
+							replace={el.path === '/support' ? true : false}>
 							{el.text}
 						</NavLink>
 					))}
@@ -62,7 +68,16 @@ const App = () => {
 							</Suspense>
 						}
 					/>
-					<Route path='*' element={<Navigate to='/tours' />} />
+					<Route
+						path='*'
+						element={
+							<div>
+								<p>not found</p>
+								<button onClick={() => navigate(-1)}>Back</button>
+							</div>
+						}
+					/>
+					{/* <Route path='*' element={<Navigate to='/tours' />} /> */}
 					{/* <Route
 						path='*'
 						element={
@@ -79,3 +94,7 @@ const App = () => {
 };
 
 export default App;
+
+// gkjvjgbkgb
+// support {replace}
+// /tours
