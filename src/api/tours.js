@@ -1,12 +1,9 @@
 import HTTPClient from './config';
 
 const fetchTours = (query = false) => {
-	const requestURL = query ? `/tours?name_like=${query}` : '/tours';
+	const requestURL = query ? `/tours?name_like=${query}` : '/tourss';
 
-	return HTTPClient.get(requestURL).then(({ data }) => ({
-		total_items: data.length,
-		items: data,
-	}));
+	return HTTPClient.get(requestURL);
 };
 
 const addTour = (tour) => {

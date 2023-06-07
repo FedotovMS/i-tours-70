@@ -8,18 +8,19 @@ import debounce from 'lodash.debounce';
 import { useToggle } from 'hooks/useToggle';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTours } from 'store/tours/selectors';
-import { addNewTour, fetchAllTours, removeTourById } from 'store/tours/actions';
+import { getIsError, getIsLoading, getTours } from 'store/tours/selectors';
+import { addNewTour, removeTourById } from 'store/tours/slice';
+import { fetchAllTours } from 'store/tours/operations';
 
 const Tours = () => {
 	const { visible, open, close } = useToggle();
 	const dispatch = useDispatch();
 
+	const isLoading = useSelector(getIsLoading);
+	const errorMessage = useSelector(getIsError);
 	const { items, total_items } = useSelector(getTours);
 
 	const [query, setQuery] = useState('');
-	const [isLoading, setLoading] = useState(false);
-	const [isError, setError] = useState(false);
 	// const [tours, setTours] = useState({
 	// 	total_items: 0,
 	// 	items: [],
@@ -40,8 +41,7 @@ const Tours = () => {
 	// componentDidMount && componentDidUpdate
 
 	useEffect(() => {
-		// handleFetchTours();
-		dispatch(fetchAllTours(query));
+		dispatch(fetchAllTours({ query }));
 	}, [dispatch, query]);
 
 	const handleAddTours = async (tour) => {
@@ -67,7 +67,6 @@ const Tours = () => {
 	return (
 		<>
 			<ToursForm visible={visible} onClose={close} onAddFunc={handleAddTours} />
-			<p>{isLoading}</p>
 
 			<section className='tours-page'>
 				<div className='tours-page__controlls'>
@@ -81,12 +80,13 @@ const Tours = () => {
 
 					<button onClick={open}>Open Modal</button>
 				</div>
+
 				{isLoading ? (
 					<div>...loading</div>
 				) : (
 					<>
-						{isError ? (
-							<div>Something went wrong</div>
+						{errorMessage ? (
+							<p>{errorMessage}</p>
 						) : (
 							<>
 								<h6>Total tours:{total_items}</h6>

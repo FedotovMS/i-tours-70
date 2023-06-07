@@ -5,9 +5,13 @@ import clsx from 'clsx';
 import { LIGHT, DARK } from 'constants';
 import { useTheme } from 'hooks/useThemeContext';
 import { Link, Outlet, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getTheme } from 'store/theme/slice';
 
 const ToursItem = ({ id, name, price, description, continent, onDelete }) => {
-	const { theme } = useTheme();
+	// const { theme } = useTheme();
+	const theme = useSelector(getTheme);
+
 	const { tourId } = useParams();
 
 	return (

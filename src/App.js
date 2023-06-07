@@ -21,11 +21,15 @@ import ContactUs from 'components/contact-us/ContactUs';
 import TourDetails from 'components/tour-details/TourDetails';
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { fetchTours } from 'api/tours';
+import { useSelector } from 'react-redux';
+import { getTheme } from 'store/theme/slice';
 
 const Support = lazy(() => import('components/support/Support.js'));
 
 const App = () => {
-	const { theme } = useTheme();
+	// const { theme } = useTheme();
+	const theme = useSelector(getTheme);
+
 	const navigate = useNavigate();
 
 	const routes = [
@@ -55,7 +59,7 @@ const App = () => {
 				</nav>
 
 				<Routes>
-					<Route path='/tours' element={<Tours theme={theme} />}>
+					<Route path='/tours' element={<Tours />}>
 						<Route path=':tourId' element={<TourDetails />} />
 					</Route>
 
