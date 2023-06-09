@@ -8,19 +8,34 @@ import debounce from 'lodash.debounce';
 import { useToggle } from 'hooks/useToggle';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIsError, getIsLoading, getTours } from 'store/tours/selectors';
+import {
+	selectDescriptionTour,
+	selectIsError,
+	selectIsLoading,
+	selectTours,
+	selectWithoutDescriptionTour,
+	selectorTours,
+} from 'store/tours/selectors';
 import { addNewTour, removeTourById } from 'store/tours/slice';
 import { fetchAllTours } from 'store/tours/operations';
+import {
+	useAddNewTourMutation,
+	useFetchAllToursQuery,
+	useRemoveTourByIdMutation,
+} from 'store/tours/api';
 
 const Tours = () => {
 	const { visible, open, close } = useToggle();
 	const dispatch = useDispatch();
-
-	const isLoading = useSelector(getIsLoading);
-	const errorMessage = useSelector(getIsError);
-	const { items, total_items } = useSelector(getTours);
-
 	const [query, setQuery] = useState('');
+
+	const { isLoading, isError, data } = useFetchAllToursQuery(query);
+
+	const [addTour] = useAddNewTourMutation();
+	const [removeTour] = useRemoveTourByIdMutation();
+
+	// const { items, total_items } = useSelector(selectorTours);
+
 	// const [tours, setTours] = useState({
 	// 	total_items: 0,
 	// 	items: [],
@@ -40,9 +55,9 @@ const Tours = () => {
 
 	// componentDidMount && componentDidUpdate
 
-	useEffect(() => {
-		dispatch(fetchAllTours({ query }));
-	}, [dispatch, query]);
+	// useEffect(() => {
+	// 	dispatch(fetchAllTours({ query }));
+	// }, [dispatch, query]);
 
 	const handleAddTours = async (tour) => {
 		// try {
@@ -51,7 +66,8 @@ const Tours = () => {
 		// } catch (err) {
 		// 	setError(true);
 		// }
-		dispatch(addNewTour({ id: Math.ceil(Math.random() * 100000), ...tour }));
+		// dispatch(addNewTour({ id: Math.ceil(Math.random() * 100000), ...tour }));
+		addTour(tour);
 	};
 
 	const handleDeleteTours = async (tourId) => {
@@ -61,7 +77,8 @@ const Tours = () => {
 		// } catch (err) {
 		// 	setError(true);
 		// }
-		dispatch(removeTourById(tourId));
+		// dispatch(removeTourById(tourId));
+		removeTour(tourId);
 	};
 
 	return (
@@ -85,13 +102,13 @@ const Tours = () => {
 					<div>...loading</div>
 				) : (
 					<>
-						{errorMessage ? (
-							<p>{errorMessage}</p>
+						{isError ? (
+							<p>wrong</p>
 						) : (
 							<>
-								<h6>Total tours:{total_items}</h6>
+								<h6>Total tours:{data?.total_items}</h6>
 								<ul>
-									{items.map((tour) => (
+									{data?.items.map((tour) => (
 										<ToursItem key={tour.id} {...tour} onDelete={handleDeleteTours} />
 									))}
 								</ul>

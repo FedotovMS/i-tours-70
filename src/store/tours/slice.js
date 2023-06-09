@@ -43,24 +43,25 @@ export const toursSlice = createSlice({
 
 	// Handlers for async action
 
-	extraReducers: {
-		[fetchAllTours.pending]: (state) => {
-			state.isLoading = true;
-		},
-		[fetchAllTours.fulfilled]: (state, action) => {
-			state.isError = null;
-			state.isLoading = false;
+	extraReducers: (builder) => {
+		builder
+			.addCase(fetchAllTours.pending, (state, action) => {
+				state.isLoading = true;
+			})
+			.addCase(fetchAllTours.fulfilled, (state, action) => {
+				state.isError = null;
+				state.isLoading = false;
 
-			state.total_items = action.payload.total_items;
-			state.items = action.payload.items;
-		},
-		[fetchAllTours.rejected]: (state, action) => {
-			state.isError = action.payload;
-			state.isLoading = false;
+				state.total_items = action.payload.total_items;
+				state.items = action.payload.items;
+			})
+			.addCase(fetchAllTours.rejected, (state, action) => {
+				state.isError = action.payload;
+				state.isLoading = false;
 
-			state.total_items = initialState.total_items;
-			state.items = initialState.items;
-		},
+				state.total_items = initialState.total_items;
+				state.items = initialState.items;
+			});
 	},
 });
 
