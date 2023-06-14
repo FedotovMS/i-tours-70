@@ -5,4 +5,6 @@ const HTTPClient = axios.create({
 	baseURL: API_URL,
 });
 
+HTTPClient.interceptors.request = (config) => {};
+
 export default HTTPClient;

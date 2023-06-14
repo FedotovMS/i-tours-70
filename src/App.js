@@ -23,20 +23,28 @@ import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { fetchTours } from 'api/tours';
 import { useSelector } from 'react-redux';
 import { getTheme } from 'store/theme/slice';
+import Auth from 'components/auth/Auth';
+import { PrivateRoute } from 'components/PrivateRouter/PrivateRouter';
 
 const Support = lazy(() => import('components/support/Support.js'));
 
 const App = () => {
 	// const { theme } = useTheme();
 	const theme = useSelector(getTheme);
+	const [isLogged, setIsLogged] = useState(false);
 
-	const navigate = useNavigate();
+	const location = useLocation();
 
 	const routes = [
 		{ path: '/tours', text: 'go to tours page' },
 		{ path: '/contact-us', text: 'go to contact-us' },
 		{ path: '/support', text: 'go to support' },
 	];
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		setIsLogged(!!token);
+	}, [location.pathname]);
 
 	return (
 		<ThemeContextComponent>
@@ -46,51 +54,54 @@ const App = () => {
 					'light-theme': theme === LIGHT,
 				})}>
 				<Header />
-				<nav>
-					{routes.map((el) => (
-						<NavLink
-							to={el.path}
-							className='nav-item'
-							key={el.path}
-							replace={el.path === '/support' ? true : false}>
-							{el.text}
-						</NavLink>
-					))}
-				</nav>
 
 				<Routes>
-					<Route path='/tours' element={<Tours />}>
-						<Route path=':tourId' element={<TourDetails />} />
-					</Route>
+					<Route
+						path='/auth/*'
+						element={<PrivateRoute isLogged={!isLogged} component={<Auth />} />}
+					/>
 
-					<Route path={routes[1].path} element={<ContactUs />} />
 					<Route
-						path={routes[2].path}
+						path='/*'
 						element={
-							<Suspense fallback={<div>loading Support...</div>}>
-								<Support />
-							</Suspense>
+							<PrivateRoute
+								isLogged={isLogged}
+								redirectTo='/auth/sign-in'
+								component={
+									<>
+										<nav>
+											{routes.map((el) => (
+												<NavLink
+													to={el.path}
+													className='nav-item'
+													key={el.path}
+													replace={el.path === '/support' ? true : false}>
+													{el.text}
+												</NavLink>
+											))}
+										</nav>
+
+										<Routes>
+											<Route path='/tours' element={<Tours />}>
+												<Route path=':tourId' element={<TourDetails />} />
+											</Route>
+
+											<Route path={routes[1].path} element={<ContactUs />} />
+											<Route
+												path={routes[2].path}
+												element={
+													<Suspense fallback={<div>loading Support...</div>}>
+														<Support />
+													</Suspense>
+												}
+											/>
+											<Route path='*' element={<Navigate to='/tours' />} />
+										</Routes>
+									</>
+								}
+							/>
 						}
 					/>
-					<Route
-						path='*'
-						element={
-							<div>
-								<p>not found</p>
-								<button onClick={() => navigate(-1)}>Back</button>
-							</div>
-						}
-					/>
-					{/* <Route path='*' element={<Navigate to='/tours' />} /> */}
-					{/* <Route
-						path='*'
-						element={
-							<>
-								<h1>404 not found </h1>
-								<button onClick={() => navigate(-1)}>Back</button>
-							</>
-						}
-					/> */}
 				</Routes>
 			</div>
 		</ThemeContextComponent>

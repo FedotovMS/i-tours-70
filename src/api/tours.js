@@ -3,7 +3,7 @@ import HTTPClient from './config';
 const fetchTours = (query = false) => {
 	const requestURL = query ? `/tours?name_like=${query}` : '/tours';
 
-	return HTTPClient.get(requestURL);
+	return HTTPClient.get(requestURL, {});
 };
 
 const addTour = (tour) => {
