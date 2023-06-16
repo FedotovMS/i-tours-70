@@ -193,3 +193,17 @@
 #### - access_token живе до 15хв використовується для перевірки чи довіряти запиту.
 
 #### - refresh_token використовується для оновлення пари токенів живе до 30 днів.
+
+## Корисні посилання:
+
+#### - Роберт Мартін "Clean code"
+
+#### - Typescript
+
+#### - RTK Query
+
+#### - Material UI & Andt Desing & Day.js
+
+#### - Next.js
+
+#### - GraphQl && Apollo Client
